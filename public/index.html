@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Grid // Soundboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>NEON <span class="flicker">GRID</span></h1>
+            <p>System Status: <span id="status">ONLINE</span></p>
+        </header>
+
+        <main class="grid" id="sound-grid">
+            <button class="cyber-btn" data-sound="laser">
+                <span class="btn-text">LASER</span>
+                <div class="count-display">Clicks: <span id="count-laser">0</span></div>
+            </button>
+
+            <button class="cyber-btn" data-sound="neon-hum">
+                <span class="btn-text">HUM</span>
+                <div class="count-display">Clicks: <span id="count-neon-hum">0</span></div>
+            </button>
+
+            <button class="cyber-btn" data-sound="glitch">
+                <span class="btn-text">GLITCH</span>
+                <div class="count-display">Clicks: <span id="count-glitch">0</span></div>
+            </button>
+
+            <button class="cyber-btn" data-sound="power-up">
+                <span class="btn-text">POWER</span>
+                <div class="count-display">Clicks: <span id="count-power-up">0</span></div>
+            </button>
+        </main>
+        
+        <footer>
+            <p>Christian_James // Dev Build 1.0</p>
+        </footer>
+    </div>
+
+    <script src="client.js"></script>
+</body>
+</html>
