@@ -5,7 +5,6 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // --- CONNECTION STRING ---
-// Using the NEW user 'student' and password 'student123'
 const uri = process.env.MONGODB_URI; // Look for the secret key named MONGODB_URI; 
 
 mongoose.connect(uri)
@@ -61,3 +60,4 @@ app.post('/api/click', async (req, res) => {
 app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);
 });
+
