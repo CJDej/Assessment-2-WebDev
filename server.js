@@ -1,37 +1,61 @@
-/* Reference: Express.js documentation used for server setup.
-  (Remember to cite 'Express js' in your final reference list as per brief [cite: 70])
-*/
-
+/* Reference: Server setup with 'student' user credentials. */
 const express = require('express');
+const mongoose = require('mongoose');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// 1. Serve Static Content (HTML, CSS, JS) from the 'public' folder
+// --- CONNECTION STRING ---
+// Using the NEW user 'student' and password 'student123'
+const uri = process.env.MONGODB_URI; // Look for the secret key named MONGODB_URI; 
+
+mongoose.connect(uri)
+    .then(() => console.log("✅ SUCCESS: Connected to MongoDB Atlas"))
+    .catch(err => console.error("❌ ERROR: Could not connect to MongoDB:", err));
+
+const clickSchema = new mongoose.Schema({
+    soundId: String,
+    count: Number
+});
+const Click = mongoose.model('Click', clickSchema);
+
 app.use(express.static('public'));
 app.use(express.json());
 
-// In-memory database to track button clicks (The "Additional Feature")
-let soundStats = {
-    'laser': 0,
-    'neon-hum': 0,
-    'glitch': 0,
-    'power-up': 0
-};
+// --- ROUTES ---
 
-// 2. API Endpoint to update stats
-app.post('/api/click', (req, res) => {
-    const soundId = req.body.id;
-    if (soundStats[soundId] !== undefined) {
-        soundStats[soundId]++;
-        res.json({ success: true, newCount: soundStats[soundId] });
-    } else {
-        res.status(400).json({ error: 'Sound ID not found' });
+app.get('/api/stats', async (req, res) => {
+    try {
+        const data = await Click.find();
+        const stats = {};
+        data.forEach(item => stats[item.soundId] = item.count);
+        res.json(stats);
+    } catch (err) {
+        console.error("❌ Error fetching stats:", err);
+        res.status(500).json({ error: err.message });
     }
 });
 
-// 3. API Endpoint to get current stats
-app.get('/api/stats', (req, res) => {
-    res.json(soundStats);
+app.post('/api/click', async (req, res) => {
+    try {
+        console.log("🖱️ CLICK RECEIVED for:", req.body.id);
+        
+        const soundId = req.body.id;
+        let clickEntry = await Click.findOne({ soundId: soundId });
+        
+        if (!clickEntry) {
+            clickEntry = new Click({ soundId: soundId, count: 1 });
+        } else {
+            clickEntry.count++;
+        }
+        
+        await clickEntry.save();
+        console.log("✅ Saved to DB!");
+        res.json({ success: true, newCount: clickEntry.count });
+        
+    } catch (err) {
+        console.error("❌ Error saving click:", err);
+        res.status(500).json({ error: err.message });
+    }
 });
 
 app.listen(PORT, () => {
